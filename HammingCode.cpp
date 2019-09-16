@@ -20,7 +20,7 @@ int main(){
 	posBits[0] = recWord[6]^recWord[4]^recWord[2]^recWord[0];
 	posBits[1] = recWord[5]^recWord[4]^recWord[1]^recWord[0];
 	posBits[2] = recWord[3]^recWord[2]^recWord[1]^recWord[0];
-	if(posBits[0]==posBits[1]==posBits[2]==0) 
+	if((posBits[0]==0)&&(posBits[1]==0)&&(posBits[2]==0)) 
 		cout<<"\nNo error during transmission.\n";
 	else{
 		int errPos = (1*posBits[0])+(2*posBits[1])+(4*posBits[2]);
