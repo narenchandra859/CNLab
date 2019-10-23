@@ -4,7 +4,7 @@ using namespace std;
 string crc(string gP, string dataW, int k) {
 	string rem="", quo="", holder="", newREM="",zC = "00000000000000000000";
 	char zer[20] = "01";
-	int pos=17, nZ=15;
+	int pos=17;
 	string zero = "0", one = "1";
 	for(int i = 0; i<gP.length()-1; i++) 
 			rem.append((gP[i+1]==dataW[i+1])?zero:one);
