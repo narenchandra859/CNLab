@@ -1,64 +1,56 @@
 #include<iostream>
 #include<cstring>
 using namespace std;
-string crc(string gP, string dataW, int k) {
-	string rem="", quo="", holder="", newREM="",zC = "00000000000000000000";
-	char zer[20] = "01";
-	int pos=17;
-	string zero = "0", one = "1";
-	for(int i = 0; i<gP.length()-1; i++) 
-			rem.append((gP[i+1]==dataW[i+1])?zero:one);
-	if(k!=1)rem.append((dataW[pos++]==zer[0]?zero:one));
-	for(int j = 0; j<k-1; j++){
-		char c = rem[0];
-		newREM = rem;
-		if(c == zer[1]){
-			rem = "";
-			for(int i = 0; i<gP.length()-1; i++) 
-				rem.append((gP[i+1]==newREM[i+1])?zero:one);
-		}
-		else{
-			rem = "";
-			for(int i = 0; i<gP.length()-1; i++)
-				rem.append((zC[i+1]==newREM[i+1])?zero:one);
-		}
-		if(!(j==k-2))rem.append((dataW[pos++]==zer[0]?zero:one));
-	}
-	return rem;
-}		
+string crc(string gP, string dataWord, int k) {
+  int pos = 17;
+  char z[3] = "01";
+  string zero = "0", one = "1", rem, newrem;
+  for(int i = 0; i<gP.length()-1; i++) 
+    rem.append((gP[i+1]==dataWord[i+1])?zero:one);
+  rem.append((dataWord[pos++]==z[1])?one:zero);
+  for(int j = 0; j<k-1; j++) {
+    newrem = rem;
+    if(rem[0] == z[1]) {
+      rem = "";
+      for(int i = 0; i<gP.length()-1; i++)
+        rem.append((gP[i+1]==newrem[i+1])?zero:one);
+    }
+    else
+      rem = newrem.substr(1,16);
+    if(j!=k-2)rem.append((dataWord[pos++]==z[1])?one:zero);
+  }
+  return rem;
+}
 int main() {
-	string genPoly = "10001000000100001", zero="0", one="1", c, dataWord, codeWord, newDataWord;
-	char z='0', o='1';
-	int k, numZeros, i, errPos;
-	cout<<"Enter data word: ";
-	cin>>dataWord;	
-	k = dataWord.length();		
-	numZeros=16;	
-	cout<<"\nGenerating polynomial = "<<genPoly;
-	newDataWord = dataWord;
-	for(i=0;i<numZeros;i++)	
-		newDataWord.append(zero);
-	cout<<"\nNew Data Word="<<newDataWord;
-	string rem = crc(genPoly, newDataWord, k);
-	codeWord = dataWord.append(rem);
-	cout<<"\nFinal Remainder(CRC checksum) = "<<rem;
-	cout<<"\nCODEWORD = "<<codeWord;
-	cout<<"\nCheck for error? Y/N: ";
-	cin>>c;
-	if(c=="Y"){
-		cout<<"\nEnter the position to insert error: ";
-		cin>>errPos;
-		codeWord[errPos]==z?(codeWord[errPos]=o):(codeWord[errPos]=z);
-		cout<<"\nSending the codeword: "<<codeWord;
-		rem = crc(genPoly, codeWord, k);
-		cout<<"\nRemainder: "<<rem;
-		cout<<"\nWrong codeword sent, remainder is not zero!\n";
-	}
-	else{ 
-		cout<<"\nSending the codeword: "<<codeWord;
-		rem = crc(genPoly, codeWord, k);
-		cout<<"\nRemainder: "<<rem;
-		cout<<"\nRemainder zero, transmission successful.\n";
-	}
-	return 0;
+  string gP = "10001000000100001", codeWord, dataWord, zero = "0", one = "1";
+  cout<<"\nEnter the dataword : ";
+  char z[3]="01";
+  cin>>dataWord;
+  int k = dataWord.length();
+  codeWord = dataWord;
+  for(int i = 0; i<16; i++) 
+    dataWord.append("0");
+  cout<<"\nNew dataword = "<<dataWord;
+  string rem = crc(gP, dataWord, k);
+  cout<<"\nCRC rem = "<<rem;
+  codeWord.append(rem);
+  cout<<"\nNew codeword = "<<codeWord;
+  cout<<"\nCheck error? Y/N: ";
+  cin>>z[2];
+  if(z[2]=='Y') {
+    cout<<"\nEnter position of error: ";
+    int p;
+    cin>>p;
+    codeWord[p] = (codeWord[p]==z[0])?z[1]:z[0];
+    cout<<"\nSending codeword "<<codeWord;
+    rem = crc(gP, codeWord, k);
+    cout<<"\nRemainder = "<<r;
+    cout<<"\nRemainder not zero! Error!";
+  }
+  else {
+    rem = crc(gP, codeWord, k);
+    cout<<"\nSending codeword "<<codeWord;
+    cout<<"\nRemainder = "<<r;
+    cout<<"\nRemainder zero, no error!";
+  }
 }
